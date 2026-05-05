@@ -133,7 +133,13 @@ const elements = {
   activeFilters: document.getElementById("activeFilters"),
   exportBtn: document.getElementById("exportBtn"),
   shipmentsBody: document.getElementById("shipmentsBody"),
-  holdTimeHeader: document.getElementById("holdTimeHeader")
+  holdTimeHeader: document.getElementById("holdTimeHeader"),
+  openAdvancedFiltersBtn: document.getElementById("openAdvancedFiltersBtn"),
+  closeAdvancedFiltersBtn: document.getElementById("closeAdvancedFiltersBtn"),
+  applyAdvancedFiltersBtn: document.getElementById("applyAdvancedFiltersBtn"),
+  clearAdvancedFiltersBtn: document.getElementById("clearAdvancedFiltersBtn"),
+  advancedFiltersOverlay: document.getElementById("advancedFiltersOverlay"),
+  advancedFilterCount: document.getElementById("advancedFilterCount")
 };
 
 function isNeedsAttention(shipment) {
@@ -246,6 +252,7 @@ function renderTable() {
   );
   renderActiveFilterChips();
   updateResetButtonVisibility();
+  updateAdvancedFilterCount();
 
   if (!filtered.length) {
     const colSpan = state.tab === "needs_attention" ? 9 : 8;
@@ -393,6 +400,47 @@ function updateResetButtonVisibility() {
   elements.resetFiltersBtn.classList.toggle("hidden", !hasActiveFilters());
 }
 
+function countActiveAdvancedFilters() {
+  let count = 0;
+  if (elements.creationDateFrom.value) count += 1;
+  if (elements.creationDateTo.value) count += 1;
+  if (elements.pickupAttemptsFilter.value !== "all") count += 1;
+  if (elements.deliveryAttemptsFilter.value !== "all") count += 1;
+  if (elements.holdTimeFilter.value !== "all") count += 1;
+  return count;
+}
+
+function updateAdvancedFilterCount() {
+  const count = countActiveAdvancedFilters();
+  elements.advancedFilterCount.textContent = count;
+  elements.advancedFilterCount.classList.toggle("hidden", count === 0);
+}
+
+function setAdvancedFiltersOpen(open) {
+  const overlay = elements.advancedFiltersOverlay;
+  if (open) {
+    overlay.hidden = false;
+    requestAnimationFrame(() => overlay.classList.add("open"));
+    document.body.style.overflow = "hidden";
+  } else {
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+    setTimeout(() => {
+      if (!overlay.classList.contains("open")) {
+        overlay.hidden = true;
+      }
+    }, 250);
+  }
+}
+
+function clearAdvancedFilters() {
+  elements.creationDateFrom.value = "";
+  elements.creationDateTo.value = "";
+  elements.pickupAttemptsFilter.value = "all";
+  elements.deliveryAttemptsFilter.value = "all";
+  elements.holdTimeFilter.value = "all";
+}
+
 function formatDate(dateString) {
   const date = new Date(`${dateString}T00:00:00`);
   return date.toLocaleDateString("en-GB", {
@@ -507,5 +555,33 @@ elements.activeFilters.addEventListener("click", (event) => {
 });
 
 elements.exportBtn.addEventListener("click", exportVisibleRows);
+
+elements.openAdvancedFiltersBtn.addEventListener("click", () =>
+  setAdvancedFiltersOpen(true)
+);
+elements.closeAdvancedFiltersBtn.addEventListener("click", () =>
+  setAdvancedFiltersOpen(false)
+);
+elements.applyAdvancedFiltersBtn.addEventListener("click", () => {
+  renderTable();
+  setAdvancedFiltersOpen(false);
+});
+elements.clearAdvancedFiltersBtn.addEventListener("click", () => {
+  clearAdvancedFilters();
+  renderTable();
+});
+elements.advancedFiltersOverlay.addEventListener("click", (event) => {
+  if (event.target === elements.advancedFiltersOverlay) {
+    setAdvancedFiltersOpen(false);
+  }
+});
+document.addEventListener("keydown", (event) => {
+  if (
+    event.key === "Escape" &&
+    elements.advancedFiltersOverlay.classList.contains("open")
+  ) {
+    setAdvancedFiltersOpen(false);
+  }
+});
 
 renderTable();

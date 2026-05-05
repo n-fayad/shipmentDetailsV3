@@ -79,6 +79,17 @@
                 type="text"
                 placeholder="Search by Order #, Shipment #, Manifest, or phone number"
               />
+              <select id="sortBy" aria-label="Sort">
+                <option value="none">Sort: None</option>
+                <option value="created_desc">Creation Date: Newest First</option>
+                <option value="created_asc">Creation Date: Oldest First</option>
+                <option value="hold_desc">
+                  Hold Time (Needs Attention): Longest First
+                </option>
+                <option value="hold_asc">
+                  Hold Time (Needs Attention): Shortest First
+                </option>
+              </select>
               <select id="channelFilter">
                 <option value="all">Channels: All</option>
                 <option value="salla">Salla</option>
@@ -95,16 +106,38 @@
                 <option value="unable_to_deliver">Unable to Deliver</option>
                 <option value="delivered">Delivered</option>
               </select>
+              <button id="openAdvancedFiltersBtn" type="button" class="advanced-filters-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="4" y1="6" x2="20" y2="6"></line>
+                  <line x1="7" y1="12" x2="17" y2="12"></line>
+                  <line x1="10" y1="18" x2="14" y2="18"></line>
+                </svg>
+                Advanced Filters
+                <span id="advancedFilterCount" class="advanced-filter-count hidden">0</span>
+              </button>
             </div>
             <div id="activeFilters" class="active-filters hidden"></div>
+          </section>
 
-            <details open>
-              <summary>Advanced Filtration</summary>
-              <div class="advanced-top">
-                <div class="advanced-title">Filters</div>
+          <div id="advancedFiltersOverlay" class="drawer-overlay" hidden>
+            <aside
+              class="drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="advancedFiltersTitle"
+            >
+              <div class="drawer-header">
+                <div id="advancedFiltersTitle" class="drawer-title">Advanced Filters</div>
+                <button
+                  id="closeAdvancedFiltersBtn"
+                  type="button"
+                  class="drawer-close"
+                  aria-label="Close advanced filters"
+                >
+                  &times;
+                </button>
               </div>
-
-              <div class="advanced-grid">
+              <div class="drawer-body">
                 <label>
                   Creation Date (From)
                   <input id="creationDateFrom" type="date" />
@@ -142,23 +175,17 @@
                     <option value="none">No Hold Time (-)</option>
                   </select>
                 </label>
-                <label>
-                  Sort
-                  <select id="sortBy">
-                    <option value="none">None</option>
-                    <option value="created_desc">Creation Date: Newest First</option>
-                    <option value="created_asc">Creation Date: Oldest First</option>
-                    <option value="hold_desc">
-                      Hold Time (Needs Attention): Longest First
-                    </option>
-                    <option value="hold_asc">
-                      Hold Time (Needs Attention): Shortest First
-                    </option>
-                  </select>
-                </label>
               </div>
-            </details>
-          </section>
+              <div class="drawer-footer">
+                <button id="clearAdvancedFiltersBtn" type="button" class="button-secondary">
+                  Clear
+                </button>
+                <button id="applyAdvancedFiltersBtn" type="button" class="button-primary">
+                  Apply
+                </button>
+              </div>
+            </aside>
+          </div>
 
           <section class="table-wrap">
             <table>

@@ -1,0 +1,320 @@
+.ShipmentDetail_container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.Header_breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.Header_breadcrumbItem {
+  color: #4b5563;
+  text-decoration: none;
+}
+
+.Header_separator {
+  color: #9ca3af;
+}
+
+.ShipmentDetail_content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 12px;
+  align-items: start;
+}
+
+.ShipmentDetail_leftColumn {
+  min-width: 0;
+}
+
+.ShipmentDetailHeader_card,
+.CustomerInfoCard_card,
+.DAInfoCard_card,
+.ShipmentItemsCard_card,
+.TrackingTimeline_card {
+  background: #fff;
+  border: 1px solid #e4e8f0;
+  border-radius: 12px;
+}
+
+.ShipmentDetailHeader_card {
+  padding: 16px;
+}
+
+.ShipmentDetailHeader_headerTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ShipmentDetailHeader_headerLeft {
+  display: flex;
+  gap: 10px;
+}
+
+.ShipmentDetailHeader_backButton {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #d9e0ec;
+  border-radius: 8px;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ShipmentDetailHeader_titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ShipmentDetailHeader_awbTitle {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.1;
+  color: #111827;
+}
+
+.StatusBadge_badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-delivered {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-out_for_delivery {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-unable_to_deliver,
+.status-pickup_attempts_exhausted {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ShipmentDetailHeader_subLine {
+  margin: 8px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.ShipmentDetailHeader_actions {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.ShipmentDetailHeader_cancelButton,
+.Button_button {
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ShipmentDetailHeader_cancelButton {
+  background: #fff;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.Button_primary {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.ShipmentDetailHeader_statsRow {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #edf1f7;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.ShipmentDetailHeader_statItem {
+  min-width: 0;
+}
+
+.ShipmentDetailHeader_statLabel {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.ShipmentDetailHeader_statValue {
+  margin-top: 4px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  word-break: break-word;
+}
+
+.ShipmentDetail_midRow {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.CustomerInfoCard_cardHeader,
+.DAInfoCard_cardHeader,
+.ShipmentItemsCard_cardHeader,
+.TrackingTimeline_cardHeader {
+  padding: 14px 14px 0;
+}
+
+.CustomerInfoCard_cardTitle,
+.DAInfoCard_cardTitle,
+.ShipmentItemsCard_cardTitle,
+.TrackingTimeline_cardTitle {
+  margin: 0;
+  font-size: 20px;
+  color: #111827;
+}
+
+.CustomerInfoCard_cardBody,
+.DAInfoCard_cardBody {
+  padding: 8px 14px 14px;
+}
+
+.CustomerInfoCard_infoItem,
+.DAInfoCard_driverField {
+  margin-top: 10px;
+}
+
+.CustomerInfoCard_infoLabel,
+.DAInfoCard_driverLabel {
+  font-size: 12px;
+  color: #6b7280;
+  display: block;
+}
+
+.CustomerInfoCard_infoValue,
+.CustomerInfoCard_addressLink,
+.DAInfoCard_driverValue {
+  margin-top: 2px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  word-break: break-word;
+}
+
+.CustomerInfoCard_addressLink {
+  color: #2563eb;
+}
+
+.ShipmentItemsCard_card {
+  margin-top: 12px;
+}
+
+.ShipmentItemsCard_tableWrap {
+  padding: 10px 14px 14px;
+}
+
+.ShipmentItemsCard_tableWrap table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.ShipmentItemsCard_tableWrap th,
+.ShipmentItemsCard_tableWrap td {
+  white-space: normal;
+  word-break: break-word;
+}
+
+.ShipmentDetail_rightColumn {
+  min-width: 0;
+}
+
+.TrackingTimeline_cardBody {
+  padding: 10px 14px 14px;
+}
+
+.TrackingTimeline_timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.TrackingTimeline_timeline li {
+  position: relative;
+  padding: 10px 0 10px 26px;
+  border-top: 1px solid #edf1f7;
+  color: #111827;
+}
+
+.TrackingTimeline_timeline li::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #c6cedd;
+  background: #fff;
+  position: absolute;
+  left: 2px;
+  top: 14px;
+}
+
+.TrackingTimeline_timeline li.active::before {
+  border-color: #0f172a;
+}
+
+.timeline-sub {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+@media (max-width: 1200px) {
+  .ShipmentDetail_content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .ShipmentDetailHeader_headerTop {
+    flex-direction: column;
+  }
+
+  .ShipmentDetailHeader_actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .ShipmentDetailHeader_statsRow {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+
+  .ShipmentDetail_midRow {
+    grid-template-columns: 1fr;
+  }
+
+  .ShipmentDetailHeader_awbTitle,
+  .ShipmentDetailHeader_statValue,
+  .CustomerInfoCard_infoValue,
+  .CustomerInfoCard_addressLink,
+  .DAInfoCard_driverValue {
+    font-size: 18px;
+  }
+}

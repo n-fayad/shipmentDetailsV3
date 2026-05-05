@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shipment Details V3 Prototype</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">noon<span>partners</span></div>
+        <nav>
+          <a href="#">Home</a>
+          <a href="#">Catalog</a>
+          <a href="#">Fulfilled by Jump</a>
+          <a class="active" href="#">Delivered by Jump</a>
+          <a href="#">Customer Returns</a>
+          <a href="#">Stock Sync</a>
+          <a href="#">Settings</a>
+        </nav>
+      </aside>
+
+      <div class="content">
+        <header class="topbar">
+          <div class="store-chip">478602 | Medrar Al-Oula</div>
+          <div class="topbar-actions">
+            <input class="top-search" type="text" placeholder="Search..." />
+          </div>
+        </header>
+
+        <main class="container">
+          <header class="header">
+            <div>
+              <h1>Delivered by Jump</h1>
+              <p>
+                Here, you can track the shipments that are fulfilled by you and
+                delivered by us.
+              </p>
+            </div>
+          </header>
+
+          <div class="actions-row">
+            <button id="exportBtn" class="button button-primary">
+              <span class="btn-icon">+</span>
+              Export Shipments
+            </button>
+          </div>
+
+          <section class="filters">
+            <section class="logistics_tabsContainer tabs">
+              <div class="AdvancedTabs_container">
+                <button id="allShipmentsTab" type="button" class="AdvancedTabs_tab tab active">
+                  <span class="AdvancedTabs_icon tab-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                      <path d="M12 22V12"></path>
+                      <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                      <path d="m7.5 4.27 9 5.15"></path>
+                    </svg>
+                  </span>
+                  All Shipments
+                </button>
+                <button id="needsAttentionTab" type="button" class="AdvancedTabs_tab tab">
+                  <span class="AdvancedTabs_icon tab-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 16v-4"></path>
+                      <path d="M12 8h.01"></path>
+                    </svg>
+                  </span>
+                  Needs Attention
+                </button>
+              </div>
+            </section>
+            <div class="filter-row">
+              <input
+                id="searchInput"
+                type="text"
+                placeholder="Search by Order #, Shipment #, Manifest, or phone number"
+              />
+              <select id="channelFilter">
+                <option value="all">Channels: All</option>
+                <option value="salla">Salla</option>
+                <option value="noon">Noon</option>
+                <option value="shopify">Shopify</option>
+              </select>
+              <select id="statusFilter">
+                <option value="all">Status: All</option>
+                <option value="pending_pickup">Pending Pickup</option>
+                <option value="pickup_attempts_exhausted">
+                  Pickup Attempts Exhausted
+                </option>
+                <option value="out_for_delivery">Out for Delivery</option>
+                <option value="unable_to_deliver">Unable to Deliver</option>
+                <option value="delivered">Delivered</option>
+              </select>
+            </div>
+            <div id="activeFilters" class="active-filters hidden"></div>
+
+            <details open>
+              <summary>Advanced Filtration</summary>
+              <div class="advanced-top">
+                <div class="advanced-title">Filters</div>
+              </div>
+
+              <div class="advanced-grid">
+                <label>
+                  Creation Date (From)
+                  <input id="creationDateFrom" type="date" />
+                </label>
+                <label>
+                  Creation Date (To)
+                  <input id="creationDateTo" type="date" />
+                </label>
+                <label>
+                  Pickup Attempts (0-4)
+                  <select id="pickupAttemptsFilter">
+                    <option value="all">All</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
+                </label>
+                <label>
+                  Delivery Attempts (0-3)
+                  <select id="deliveryAttemptsFilter">
+                    <option value="all">All</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                  </select>
+                </label>
+                <label>
+                  Hold Time Filter (Needs Attention)
+                  <select id="holdTimeFilter">
+                    <option value="all">All</option>
+                    <option value="with_value">Has Hold Time</option>
+                    <option value="none">No Hold Time (-)</option>
+                  </select>
+                </label>
+                <label>
+                  Sort
+                  <select id="sortBy">
+                    <option value="none">None</option>
+                    <option value="created_desc">Creation Date: Newest First</option>
+                    <option value="created_asc">Creation Date: Oldest First</option>
+                    <option value="hold_desc">
+                      Hold Time (Needs Attention): Longest First
+                    </option>
+                    <option value="hold_asc">
+                      Hold Time (Needs Attention): Shortest First
+                    </option>
+                  </select>
+                </label>
+              </div>
+            </details>
+          </section>
+
+          <section class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>AWB Number</th>
+                  <th>Order Number</th>
+                  <th>Customer Phone Number</th>
+                  <th>Quantity</th>
+                  <th>Shipment Status</th>
+                  <th>Pickup Attempts</th>
+                  <th>Delivery Attempts</th>
+                  <th>Created At</th>
+                  <th id="holdTimeHeader" class="hidden">Hold Time</th>
+                </tr>
+              </thead>
+              <tbody id="shipmentsBody"></tbody>
+            </table>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

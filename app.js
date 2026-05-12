@@ -117,6 +117,20 @@ const state = {
   tab: "all_shipments"
 };
 
+const appliedAdvancedFilters = {
+  creationDateFrom: "",
+  creationDateTo: "",
+  pickupAttempts: "all",
+  deliveryAttempts: "all",
+  holdTime: "all"
+};
+
+const holdTimeLabels = {
+  all: "All",
+  with_value: "Has Hold Time",
+  none: "No Hold Time (-)"
+};
+
 const elements = {
   allShipmentsTab: document.getElementById("allShipmentsTab"),
   needsAttentionTab: document.getElementById("needsAttentionTab"),
@@ -153,11 +167,11 @@ function getFilteredData() {
   const searchTerm = elements.searchInput.value.trim().toLowerCase();
   const channel = elements.channelFilter.value;
   const status = elements.statusFilter.value;
-  const from = elements.creationDateFrom.value;
-  const to = elements.creationDateTo.value;
-  const pickupAttemptsFilter = elements.pickupAttemptsFilter.value;
-  const deliveryAttemptsFilter = elements.deliveryAttemptsFilter.value;
-  const holdTimeFilter = elements.holdTimeFilter.value;
+  const from = appliedAdvancedFilters.creationDateFrom;
+  const to = appliedAdvancedFilters.creationDateTo;
+  const pickupAttemptsFilter = appliedAdvancedFilters.pickupAttempts;
+  const deliveryAttemptsFilter = appliedAdvancedFilters.deliveryAttempts;
+  const holdTimeFilter = appliedAdvancedFilters.holdTime;
   const sortBy = elements.sortBy.value;
 
   let result = shipments.filter((shipment) => {
@@ -313,34 +327,34 @@ function getActiveFilters() {
       label: `Status: ${elements.statusFilter.options[elements.statusFilter.selectedIndex].text}`
     });
   }
-  if (elements.creationDateFrom.value) {
+  if (appliedAdvancedFilters.creationDateFrom) {
     activeFilters.push({
       key: "creationFrom",
-      label: `Created From: ${elements.creationDateFrom.value}`
+      label: `Created From: ${appliedAdvancedFilters.creationDateFrom}`
     });
   }
-  if (elements.creationDateTo.value) {
+  if (appliedAdvancedFilters.creationDateTo) {
     activeFilters.push({
       key: "creationTo",
-      label: `Created To: ${elements.creationDateTo.value}`
+      label: `Created To: ${appliedAdvancedFilters.creationDateTo}`
     });
   }
-  if (elements.pickupAttemptsFilter.value !== "all") {
+  if (appliedAdvancedFilters.pickupAttempts !== "all") {
     activeFilters.push({
       key: "pickupAttempts",
-      label: `Pickup Attempts: ${elements.pickupAttemptsFilter.value}`
+      label: `Pickup Attempts: ${appliedAdvancedFilters.pickupAttempts}`
     });
   }
-  if (elements.deliveryAttemptsFilter.value !== "all") {
+  if (appliedAdvancedFilters.deliveryAttempts !== "all") {
     activeFilters.push({
       key: "deliveryAttempts",
-      label: `Delivery Attempts: ${elements.deliveryAttemptsFilter.value}`
+      label: `Delivery Attempts: ${appliedAdvancedFilters.deliveryAttempts}`
     });
   }
-  if (elements.holdTimeFilter.value !== "all") {
+  if (appliedAdvancedFilters.holdTime !== "all") {
     activeFilters.push({
       key: "holdTime",
-      label: `Hold Time: ${elements.holdTimeFilter.options[elements.holdTimeFilter.selectedIndex].text}`
+      label: `Hold Time: ${holdTimeLabels[appliedAdvancedFilters.holdTime]}`
     });
   }
   if (elements.sortBy.value !== "none") {
@@ -373,11 +387,26 @@ function clearFilterByKey(key) {
   if (key === "search") elements.searchInput.value = "";
   if (key === "channel") elements.channelFilter.value = "all";
   if (key === "status") elements.statusFilter.value = "all";
-  if (key === "creationFrom") elements.creationDateFrom.value = "";
-  if (key === "creationTo") elements.creationDateTo.value = "";
-  if (key === "pickupAttempts") elements.pickupAttemptsFilter.value = "all";
-  if (key === "deliveryAttempts") elements.deliveryAttemptsFilter.value = "all";
-  if (key === "holdTime") elements.holdTimeFilter.value = "all";
+  if (key === "creationFrom") {
+    appliedAdvancedFilters.creationDateFrom = "";
+    elements.creationDateFrom.value = "";
+  }
+  if (key === "creationTo") {
+    appliedAdvancedFilters.creationDateTo = "";
+    elements.creationDateTo.value = "";
+  }
+  if (key === "pickupAttempts") {
+    appliedAdvancedFilters.pickupAttempts = "all";
+    elements.pickupAttemptsFilter.value = "all";
+  }
+  if (key === "deliveryAttempts") {
+    appliedAdvancedFilters.deliveryAttempts = "all";
+    elements.deliveryAttemptsFilter.value = "all";
+  }
+  if (key === "holdTime") {
+    appliedAdvancedFilters.holdTime = "all";
+    elements.holdTimeFilter.value = "all";
+  }
   if (key === "sortBy") elements.sortBy.value = "none";
 }
 
@@ -386,12 +415,12 @@ function hasActiveFilters() {
     elements.searchInput.value.trim() !== "" ||
     elements.channelFilter.value !== "all" ||
     elements.statusFilter.value !== "all" ||
-    elements.creationDateFrom.value !== "" ||
-    elements.creationDateTo.value !== "" ||
     elements.sortBy.value !== "none" ||
-    elements.pickupAttemptsFilter.value !== "all" ||
-    elements.deliveryAttemptsFilter.value !== "all" ||
-    elements.holdTimeFilter.value !== "all"
+    appliedAdvancedFilters.creationDateFrom !== "" ||
+    appliedAdvancedFilters.creationDateTo !== "" ||
+    appliedAdvancedFilters.pickupAttempts !== "all" ||
+    appliedAdvancedFilters.deliveryAttempts !== "all" ||
+    appliedAdvancedFilters.holdTime !== "all"
   );
 }
 
@@ -402,11 +431,11 @@ function updateResetButtonVisibility() {
 
 function countActiveAdvancedFilters() {
   let count = 0;
-  if (elements.creationDateFrom.value) count += 1;
-  if (elements.creationDateTo.value) count += 1;
-  if (elements.pickupAttemptsFilter.value !== "all") count += 1;
-  if (elements.deliveryAttemptsFilter.value !== "all") count += 1;
-  if (elements.holdTimeFilter.value !== "all") count += 1;
+  if (appliedAdvancedFilters.creationDateFrom) count += 1;
+  if (appliedAdvancedFilters.creationDateTo) count += 1;
+  if (appliedAdvancedFilters.pickupAttempts !== "all") count += 1;
+  if (appliedAdvancedFilters.deliveryAttempts !== "all") count += 1;
+  if (appliedAdvancedFilters.holdTime !== "all") count += 1;
   return count;
 }
 
@@ -433,12 +462,28 @@ function setAdvancedFiltersOpen(open) {
   }
 }
 
-function clearAdvancedFilters() {
+function clearAdvancedFiltersInputs() {
   elements.creationDateFrom.value = "";
   elements.creationDateTo.value = "";
   elements.pickupAttemptsFilter.value = "all";
   elements.deliveryAttemptsFilter.value = "all";
   elements.holdTimeFilter.value = "all";
+}
+
+function syncAdvancedFiltersInputsFromApplied() {
+  elements.creationDateFrom.value = appliedAdvancedFilters.creationDateFrom;
+  elements.creationDateTo.value = appliedAdvancedFilters.creationDateTo;
+  elements.pickupAttemptsFilter.value = appliedAdvancedFilters.pickupAttempts;
+  elements.deliveryAttemptsFilter.value = appliedAdvancedFilters.deliveryAttempts;
+  elements.holdTimeFilter.value = appliedAdvancedFilters.holdTime;
+}
+
+function commitAdvancedFiltersFromInputs() {
+  appliedAdvancedFilters.creationDateFrom = elements.creationDateFrom.value;
+  appliedAdvancedFilters.creationDateTo = elements.creationDateTo.value;
+  appliedAdvancedFilters.pickupAttempts = elements.pickupAttemptsFilter.value;
+  appliedAdvancedFilters.deliveryAttempts = elements.deliveryAttemptsFilter.value;
+  appliedAdvancedFilters.holdTime = elements.holdTimeFilter.value;
 }
 
 function formatDate(dateString) {
@@ -454,9 +499,14 @@ function resetFilters() {
   elements.searchInput.value = "";
   elements.channelFilter.value = "all";
   elements.statusFilter.value = "all";
+  elements.sortBy.value = "none";
+  appliedAdvancedFilters.creationDateFrom = "";
+  appliedAdvancedFilters.creationDateTo = "";
+  appliedAdvancedFilters.pickupAttempts = "all";
+  appliedAdvancedFilters.deliveryAttempts = "all";
+  appliedAdvancedFilters.holdTime = "all";
   elements.creationDateFrom.value = "";
   elements.creationDateTo.value = "";
-  elements.sortBy.value = "none";
   elements.pickupAttemptsFilter.value = "all";
   elements.deliveryAttemptsFilter.value = "all";
   elements.holdTimeFilter.value = "all";
@@ -533,12 +583,7 @@ elements.needsAttentionTab.addEventListener("click", () =>
   elements.searchInput,
   elements.channelFilter,
   elements.statusFilter,
-  elements.creationDateFrom,
-  elements.creationDateTo,
-  elements.sortBy,
-  elements.pickupAttemptsFilter,
-  elements.deliveryAttemptsFilter,
-  elements.holdTimeFilter
+  elements.sortBy
 ].forEach((element) => element.addEventListener("input", renderTable));
 
 elements.activeFilters.addEventListener("click", (event) => {
@@ -556,19 +601,20 @@ elements.activeFilters.addEventListener("click", (event) => {
 
 elements.exportBtn.addEventListener("click", exportVisibleRows);
 
-elements.openAdvancedFiltersBtn.addEventListener("click", () =>
-  setAdvancedFiltersOpen(true)
-);
+elements.openAdvancedFiltersBtn.addEventListener("click", () => {
+  syncAdvancedFiltersInputsFromApplied();
+  setAdvancedFiltersOpen(true);
+});
 elements.closeAdvancedFiltersBtn.addEventListener("click", () =>
   setAdvancedFiltersOpen(false)
 );
 elements.applyAdvancedFiltersBtn.addEventListener("click", () => {
+  commitAdvancedFiltersFromInputs();
   renderTable();
   setAdvancedFiltersOpen(false);
 });
 elements.clearAdvancedFiltersBtn.addEventListener("click", () => {
-  clearAdvancedFilters();
-  renderTable();
+  clearAdvancedFiltersInputs();
 });
 elements.advancedFiltersOverlay.addEventListener("click", (event) => {
   if (event.target === elements.advancedFiltersOverlay) {

@@ -1,109 +1,4 @@
-const shipments = [
-  {
-    awb: "PH57527348226S",
-    order: "258101639",
-    manifest: "MNF-10001",
-    channel: "salla",
-    customerPhone: "966551231234",
-    quantity: 1,
-    status: "pending_pickup",
-    pickupAttempts: 0,
-    deliveryAttempts: 0,
-    createdAt: "2026-05-05",
-    holdTimeHours: null
-  },
-  {
-    awb: "PH52127077256S",
-    order: "258132215",
-    manifest: "MNF-10002",
-    channel: "salla",
-    customerPhone: "966553334455",
-    quantity: 5,
-    status: "pending_pickup",
-    pickupAttempts: 1,
-    deliveryAttempts: 0,
-    createdAt: "2026-05-05",
-    holdTimeHours: null
-  },
-  {
-    awb: "PH43412413829S",
-    order: "252872205",
-    manifest: "MNF-20001",
-    channel: "noon",
-    customerPhone: "966500112233",
-    quantity: 1,
-    status: "pickup_attempts_exhausted",
-    pickupAttempts: 4,
-    deliveryAttempts: 0,
-    createdAt: "2026-04-07",
-    holdTimeHours: null
-  },
-  {
-    awb: "PH45475805586S",
-    order: "252791977",
-    manifest: "MNF-20002",
-    channel: "shopify",
-    customerPhone: "966577889900",
-    quantity: 1,
-    status: "pickup_attempts_exhausted",
-    pickupAttempts: 4,
-    deliveryAttempts: 0,
-    createdAt: "2026-04-06",
-    holdTimeHours: null
-  },
-  {
-    awb: "PH60144112003S",
-    order: "259001000",
-    manifest: "MNF-30003",
-    channel: "noon",
-    customerPhone: "966566778899",
-    quantity: 2,
-    status: "unable_to_deliver",
-    pickupAttempts: 1,
-    deliveryAttempts: 3,
-    createdAt: "2026-04-02",
-    holdTimeHours: 68
-  },
-  {
-    awb: "PH60144112004S",
-    order: "259001001",
-    manifest: "MNF-30004",
-    channel: "salla",
-    customerPhone: "966533221199",
-    quantity: 3,
-    status: "out_for_delivery",
-    pickupAttempts: 1,
-    deliveryAttempts: 1,
-    createdAt: "2026-05-03",
-    holdTimeHours: null
-  },
-  {
-    awb: "PH60144112005S",
-    order: "259001002",
-    manifest: "MNF-30005",
-    channel: "shopify",
-    customerPhone: "966588001122",
-    quantity: 4,
-    status: "delivered",
-    pickupAttempts: 1,
-    deliveryAttempts: 1,
-    createdAt: "2026-04-29",
-    holdTimeHours: null
-  },
-  {
-    awb: "PH60144112006S",
-    order: "259001003",
-    manifest: "MNF-30006",
-    channel: "noon",
-    customerPhone: "966599551010",
-    quantity: 1,
-    status: "unable_to_deliver",
-    pickupAttempts: 2,
-    deliveryAttempts: 2,
-    createdAt: "2026-05-01",
-    holdTimeHours: 14
-  }
-];
+const shipments = window.SHIPMENTS;
 
 const statusLabels = {
   pending_pickup: "Pending Pickup",
@@ -285,7 +180,7 @@ function renderTable() {
       return `<tr class="${rowClass}">
         <td><a href="./shipment.html?awb=${encodeURIComponent(
           shipment.awb
-        )}">${shipment.awb}</a><br /><small>${shipment.channel.toUpperCase()}</small></td>
+        )}&status=${encodeURIComponent(shipment.status)}">${shipment.awb}</a><br /><small>${shipment.channel.toUpperCase()}</small></td>
         <td>${shipment.order}</td>
         <td>${shipment.customerPhone}</td>
         <td>${shipment.quantity} item${shipment.quantity > 1 ? "s" : ""}</td>

@@ -58,11 +58,14 @@
                       </div>
                     </div>
                     <div class="ShipmentDetailHeader_actions">
-                      <button class="ShipmentDetailHeader_cancelButton">
+                      <button id="cancelShipmentBtn" type="button" class="ShipmentDetailHeader_cancelButton">
                         Cancel Shipment
                       </button>
-                      <button class="Button_button Button_primary ShipmentDetailHeader_printButton">
+                      <button id="printLabelBtn" type="button" class="Button_button Button_primary ShipmentDetailHeader_printButton">
                         Print Label
+                      </button>
+                      <button id="proofOfDeliveryBtn" type="button" class="Button_button Button_primary ShipmentDetailHeader_printButton hidden">
+                        View Proof of Delivery
                       </button>
                     </div>
                   </div>
@@ -165,6 +168,7 @@
       </div>
     </div>
 
+    <script src="./shipments-data.js"></script>
     <script src="./shipment.js"></script>
   </body>
 </html>

@@ -1,109 +1,4 @@
-const shipments = [
-  {
-    awb: "PH57527348226S",
-    order: "258101639",
-    manifest: "MNF-10001",
-    channel: "salla",
-    customerPhone: "966551231234",
-    quantity: 1,
-    status: "pending_pickup",
-    pickupAttempts: 0,
-    deliveryAttempts: 0,
-    createdAt: "2026-05-05",
-    holdTimeHours: null
-  },
-  {
-    awb: "PH52127077256S",
-    order: "258132215",
-    manifest: "MNF-10002",
-    channel: "salla",
-    customerPhone: "966553334455",
-    quantity: 5,
-    status: "pending_pickup",
-    pickupAttempts: 1,
-    deliveryAttempts: 0,
-    createdAt: "2026-05-05",
-    holdTimeHours: null
-  },
-  {
-    awb: "PH43412413829S",
-    order: "252872205",
-    manifest: "MNF-20001",
-    channel: "noon",
-    customerPhone: "966500112233",
-    quantity: 1,
-    status: "pickup_attempts_exhausted",
-    pickupAttempts: 4,
-    deliveryAttempts: 0,
-    createdAt: "2026-04-07",
-    holdTimeHours: null
-  },
-  {
-    awb: "PH45475805586S",
-    order: "252791977",
-    manifest: "MNF-20002",
-    channel: "shopify",
-    customerPhone: "966577889900",
-    quantity: 1,
-    status: "pickup_attempts_exhausted",
-    pickupAttempts: 4,
-    deliveryAttempts: 0,
-    createdAt: "2026-04-06",
-    holdTimeHours: null
-  },
-  {
-    awb: "PH60144112003S",
-    order: "259001000",
-    manifest: "MNF-30003",
-    channel: "noon",
-    customerPhone: "966566778899",
-    quantity: 2,
-    status: "unable_to_deliver",
-    pickupAttempts: 1,
-    deliveryAttempts: 3,
-    createdAt: "2026-04-02",
-    holdTimeHours: 68
-  },
-  {
-    awb: "PH60144112004S",
-    order: "259001001",
-    manifest: "MNF-30004",
-    channel: "salla",
-    customerPhone: "966533221199",
-    quantity: 3,
-    status: "out_for_delivery",
-    pickupAttempts: 1,
-    deliveryAttempts: 1,
-    createdAt: "2026-05-03",
-    holdTimeHours: null
-  },
-  {
-    awb: "PH60144112005S",
-    order: "259001002",
-    manifest: "MNF-30005",
-    channel: "shopify",
-    customerPhone: "966588001122",
-    quantity: 4,
-    status: "delivered",
-    pickupAttempts: 1,
-    deliveryAttempts: 1,
-    createdAt: "2026-04-29",
-    holdTimeHours: null
-  },
-  {
-    awb: "PH60144112006S",
-    order: "259001003",
-    manifest: "MNF-30006",
-    channel: "noon",
-    customerPhone: "966599551010",
-    quantity: 1,
-    status: "unable_to_deliver",
-    pickupAttempts: 2,
-    deliveryAttempts: 2,
-    createdAt: "2026-05-01",
-    holdTimeHours: 14
-  }
-];
+const shipments = window.SHIPMENTS;
 
 const statusLabels = {
   pending_pickup: "Pending Pickup",
@@ -115,6 +10,20 @@ const statusLabels = {
 
 const state = {
   tab: "all_shipments"
+};
+
+const appliedAdvancedFilters = {
+  creationDateFrom: "",
+  creationDateTo: "",
+  pickupAttempts: "all",
+  deliveryAttempts: "all",
+  holdTime: "all"
+};
+
+const holdTimeLabels = {
+  all: "All",
+  with_value: "Has Hold Time",
+  none: "No Hold Time (-)"
 };
 
 const elements = {
@@ -133,7 +42,13 @@ const elements = {
   activeFilters: document.getElementById("activeFilters"),
   exportBtn: document.getElementById("exportBtn"),
   shipmentsBody: document.getElementById("shipmentsBody"),
-  holdTimeHeader: document.getElementById("holdTimeHeader")
+  holdTimeHeader: document.getElementById("holdTimeHeader"),
+  openAdvancedFiltersBtn: document.getElementById("openAdvancedFiltersBtn"),
+  closeAdvancedFiltersBtn: document.getElementById("closeAdvancedFiltersBtn"),
+  applyAdvancedFiltersBtn: document.getElementById("applyAdvancedFiltersBtn"),
+  clearAdvancedFiltersBtn: document.getElementById("clearAdvancedFiltersBtn"),
+  advancedFiltersOverlay: document.getElementById("advancedFiltersOverlay"),
+  advancedFilterCount: document.getElementById("advancedFilterCount")
 };
 
 function isNeedsAttention(shipment) {
@@ -147,11 +62,11 @@ function getFilteredData() {
   const searchTerm = elements.searchInput.value.trim().toLowerCase();
   const channel = elements.channelFilter.value;
   const status = elements.statusFilter.value;
-  const from = elements.creationDateFrom.value;
-  const to = elements.creationDateTo.value;
-  const pickupAttemptsFilter = elements.pickupAttemptsFilter.value;
-  const deliveryAttemptsFilter = elements.deliveryAttemptsFilter.value;
-  const holdTimeFilter = elements.holdTimeFilter.value;
+  const from = appliedAdvancedFilters.creationDateFrom;
+  const to = appliedAdvancedFilters.creationDateTo;
+  const pickupAttemptsFilter = appliedAdvancedFilters.pickupAttempts;
+  const deliveryAttemptsFilter = appliedAdvancedFilters.deliveryAttempts;
+  const holdTimeFilter = appliedAdvancedFilters.holdTime;
   const sortBy = elements.sortBy.value;
 
   let result = shipments.filter((shipment) => {
@@ -246,6 +161,7 @@ function renderTable() {
   );
   renderActiveFilterChips();
   updateResetButtonVisibility();
+  updateAdvancedFilterCount();
 
   if (!filtered.length) {
     const colSpan = state.tab === "needs_attention" ? 9 : 8;
@@ -264,7 +180,7 @@ function renderTable() {
       return `<tr class="${rowClass}">
         <td><a href="./shipment.html?awb=${encodeURIComponent(
           shipment.awb
-        )}">${shipment.awb}</a><br /><small>${shipment.channel.toUpperCase()}</small></td>
+        )}&status=${encodeURIComponent(shipment.status)}">${shipment.awb}</a><br /><small>${shipment.channel.toUpperCase()}</small></td>
         <td>${shipment.order}</td>
         <td>${shipment.customerPhone}</td>
         <td>${shipment.quantity} item${shipment.quantity > 1 ? "s" : ""}</td>
@@ -306,34 +222,34 @@ function getActiveFilters() {
       label: `Status: ${elements.statusFilter.options[elements.statusFilter.selectedIndex].text}`
     });
   }
-  if (elements.creationDateFrom.value) {
+  if (appliedAdvancedFilters.creationDateFrom) {
     activeFilters.push({
       key: "creationFrom",
-      label: `Created From: ${elements.creationDateFrom.value}`
+      label: `Created From: ${appliedAdvancedFilters.creationDateFrom}`
     });
   }
-  if (elements.creationDateTo.value) {
+  if (appliedAdvancedFilters.creationDateTo) {
     activeFilters.push({
       key: "creationTo",
-      label: `Created To: ${elements.creationDateTo.value}`
+      label: `Created To: ${appliedAdvancedFilters.creationDateTo}`
     });
   }
-  if (elements.pickupAttemptsFilter.value !== "all") {
+  if (appliedAdvancedFilters.pickupAttempts !== "all") {
     activeFilters.push({
       key: "pickupAttempts",
-      label: `Pickup Attempts: ${elements.pickupAttemptsFilter.value}`
+      label: `Pickup Attempts: ${appliedAdvancedFilters.pickupAttempts}`
     });
   }
-  if (elements.deliveryAttemptsFilter.value !== "all") {
+  if (appliedAdvancedFilters.deliveryAttempts !== "all") {
     activeFilters.push({
       key: "deliveryAttempts",
-      label: `Delivery Attempts: ${elements.deliveryAttemptsFilter.value}`
+      label: `Delivery Attempts: ${appliedAdvancedFilters.deliveryAttempts}`
     });
   }
-  if (elements.holdTimeFilter.value !== "all") {
+  if (appliedAdvancedFilters.holdTime !== "all") {
     activeFilters.push({
       key: "holdTime",
-      label: `Hold Time: ${elements.holdTimeFilter.options[elements.holdTimeFilter.selectedIndex].text}`
+      label: `Hold Time: ${holdTimeLabels[appliedAdvancedFilters.holdTime]}`
     });
   }
   if (elements.sortBy.value !== "none") {
@@ -366,11 +282,26 @@ function clearFilterByKey(key) {
   if (key === "search") elements.searchInput.value = "";
   if (key === "channel") elements.channelFilter.value = "all";
   if (key === "status") elements.statusFilter.value = "all";
-  if (key === "creationFrom") elements.creationDateFrom.value = "";
-  if (key === "creationTo") elements.creationDateTo.value = "";
-  if (key === "pickupAttempts") elements.pickupAttemptsFilter.value = "all";
-  if (key === "deliveryAttempts") elements.deliveryAttemptsFilter.value = "all";
-  if (key === "holdTime") elements.holdTimeFilter.value = "all";
+  if (key === "creationFrom") {
+    appliedAdvancedFilters.creationDateFrom = "";
+    elements.creationDateFrom.value = "";
+  }
+  if (key === "creationTo") {
+    appliedAdvancedFilters.creationDateTo = "";
+    elements.creationDateTo.value = "";
+  }
+  if (key === "pickupAttempts") {
+    appliedAdvancedFilters.pickupAttempts = "all";
+    elements.pickupAttemptsFilter.value = "all";
+  }
+  if (key === "deliveryAttempts") {
+    appliedAdvancedFilters.deliveryAttempts = "all";
+    elements.deliveryAttemptsFilter.value = "all";
+  }
+  if (key === "holdTime") {
+    appliedAdvancedFilters.holdTime = "all";
+    elements.holdTimeFilter.value = "all";
+  }
   if (key === "sortBy") elements.sortBy.value = "none";
 }
 
@@ -379,18 +310,75 @@ function hasActiveFilters() {
     elements.searchInput.value.trim() !== "" ||
     elements.channelFilter.value !== "all" ||
     elements.statusFilter.value !== "all" ||
-    elements.creationDateFrom.value !== "" ||
-    elements.creationDateTo.value !== "" ||
     elements.sortBy.value !== "none" ||
-    elements.pickupAttemptsFilter.value !== "all" ||
-    elements.deliveryAttemptsFilter.value !== "all" ||
-    elements.holdTimeFilter.value !== "all"
+    appliedAdvancedFilters.creationDateFrom !== "" ||
+    appliedAdvancedFilters.creationDateTo !== "" ||
+    appliedAdvancedFilters.pickupAttempts !== "all" ||
+    appliedAdvancedFilters.deliveryAttempts !== "all" ||
+    appliedAdvancedFilters.holdTime !== "all"
   );
 }
 
 function updateResetButtonVisibility() {
   if (!elements.resetFiltersBtn) return;
   elements.resetFiltersBtn.classList.toggle("hidden", !hasActiveFilters());
+}
+
+function countActiveAdvancedFilters() {
+  let count = 0;
+  if (appliedAdvancedFilters.creationDateFrom) count += 1;
+  if (appliedAdvancedFilters.creationDateTo) count += 1;
+  if (appliedAdvancedFilters.pickupAttempts !== "all") count += 1;
+  if (appliedAdvancedFilters.deliveryAttempts !== "all") count += 1;
+  if (appliedAdvancedFilters.holdTime !== "all") count += 1;
+  return count;
+}
+
+function updateAdvancedFilterCount() {
+  const count = countActiveAdvancedFilters();
+  elements.advancedFilterCount.textContent = count;
+  elements.advancedFilterCount.classList.toggle("hidden", count === 0);
+}
+
+function setAdvancedFiltersOpen(open) {
+  const overlay = elements.advancedFiltersOverlay;
+  if (open) {
+    overlay.hidden = false;
+    requestAnimationFrame(() => overlay.classList.add("open"));
+    document.body.style.overflow = "hidden";
+  } else {
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+    setTimeout(() => {
+      if (!overlay.classList.contains("open")) {
+        overlay.hidden = true;
+      }
+    }, 250);
+  }
+}
+
+function clearAdvancedFiltersInputs() {
+  elements.creationDateFrom.value = "";
+  elements.creationDateTo.value = "";
+  elements.pickupAttemptsFilter.value = "all";
+  elements.deliveryAttemptsFilter.value = "all";
+  elements.holdTimeFilter.value = "all";
+}
+
+function syncAdvancedFiltersInputsFromApplied() {
+  elements.creationDateFrom.value = appliedAdvancedFilters.creationDateFrom;
+  elements.creationDateTo.value = appliedAdvancedFilters.creationDateTo;
+  elements.pickupAttemptsFilter.value = appliedAdvancedFilters.pickupAttempts;
+  elements.deliveryAttemptsFilter.value = appliedAdvancedFilters.deliveryAttempts;
+  elements.holdTimeFilter.value = appliedAdvancedFilters.holdTime;
+}
+
+function commitAdvancedFiltersFromInputs() {
+  appliedAdvancedFilters.creationDateFrom = elements.creationDateFrom.value;
+  appliedAdvancedFilters.creationDateTo = elements.creationDateTo.value;
+  appliedAdvancedFilters.pickupAttempts = elements.pickupAttemptsFilter.value;
+  appliedAdvancedFilters.deliveryAttempts = elements.deliveryAttemptsFilter.value;
+  appliedAdvancedFilters.holdTime = elements.holdTimeFilter.value;
 }
 
 function formatDate(dateString) {
@@ -406,9 +394,14 @@ function resetFilters() {
   elements.searchInput.value = "";
   elements.channelFilter.value = "all";
   elements.statusFilter.value = "all";
+  elements.sortBy.value = "none";
+  appliedAdvancedFilters.creationDateFrom = "";
+  appliedAdvancedFilters.creationDateTo = "";
+  appliedAdvancedFilters.pickupAttempts = "all";
+  appliedAdvancedFilters.deliveryAttempts = "all";
+  appliedAdvancedFilters.holdTime = "all";
   elements.creationDateFrom.value = "";
   elements.creationDateTo.value = "";
-  elements.sortBy.value = "none";
   elements.pickupAttemptsFilter.value = "all";
   elements.deliveryAttemptsFilter.value = "all";
   elements.holdTimeFilter.value = "all";
@@ -485,12 +478,7 @@ elements.needsAttentionTab.addEventListener("click", () =>
   elements.searchInput,
   elements.channelFilter,
   elements.statusFilter,
-  elements.creationDateFrom,
-  elements.creationDateTo,
-  elements.sortBy,
-  elements.pickupAttemptsFilter,
-  elements.deliveryAttemptsFilter,
-  elements.holdTimeFilter
+  elements.sortBy
 ].forEach((element) => element.addEventListener("input", renderTable));
 
 elements.activeFilters.addEventListener("click", (event) => {
@@ -507,5 +495,34 @@ elements.activeFilters.addEventListener("click", (event) => {
 });
 
 elements.exportBtn.addEventListener("click", exportVisibleRows);
+
+elements.openAdvancedFiltersBtn.addEventListener("click", () => {
+  syncAdvancedFiltersInputsFromApplied();
+  setAdvancedFiltersOpen(true);
+});
+elements.closeAdvancedFiltersBtn.addEventListener("click", () =>
+  setAdvancedFiltersOpen(false)
+);
+elements.applyAdvancedFiltersBtn.addEventListener("click", () => {
+  commitAdvancedFiltersFromInputs();
+  renderTable();
+  setAdvancedFiltersOpen(false);
+});
+elements.clearAdvancedFiltersBtn.addEventListener("click", () => {
+  clearAdvancedFiltersInputs();
+});
+elements.advancedFiltersOverlay.addEventListener("click", (event) => {
+  if (event.target === elements.advancedFiltersOverlay) {
+    setAdvancedFiltersOpen(false);
+  }
+});
+document.addEventListener("keydown", (event) => {
+  if (
+    event.key === "Escape" &&
+    elements.advancedFiltersOverlay.classList.contains("open")
+  ) {
+    setAdvancedFiltersOpen(false);
+  }
+});
 
 renderTable();
